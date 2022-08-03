@@ -34,3 +34,4 @@ jobs:
           heroku_email: "sushiaudio@hotmail.com"
           healthcheck: "https://fso2022-pokedex.herokuapp.com/health"
           checkstring: "HEALTHY APP"
+          delay: 5
