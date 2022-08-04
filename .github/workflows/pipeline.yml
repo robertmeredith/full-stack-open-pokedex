@@ -30,7 +30,8 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5001
-      - name: deploy to heroku   
+      - name: deploy to heroku  
+        id: deploy 
         uses: akhileshns/heroku-deploy@v3.12.12
         if: |
           github.event_name == 'push' &&
@@ -43,9 +44,9 @@ jobs:
           checkstring: "HEALTHY APP"
           delay: 5
           rollbackonhealthcheckfailed: true
-      - name: Test Success
+      - name: Deploy Success
         uses: rjstone/discord-webhook-notify@v1
-        if: success()
+        if: ${{ success() && deploy.steps.conclusion == 'success' }}
         with:
           username: Pokedex
           text: A new version of Pokedex deployed
@@ -61,15 +62,6 @@ jobs:
             text: Build failed
             severity: error
             details: Test Failed!
-            avatarUrl: https://avatars.githubusercontent.com/u/64670585?v=4
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Cancelled
-        uses: rjstone/discord-webhook-notify@v1
-        if: cancelled()
-        with:
-            text: Process cancelled
-            severity: warn
-            details: Test Cancelled!
             avatarUrl: https://avatars.githubusercontent.com/u/64670585?v=4
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
