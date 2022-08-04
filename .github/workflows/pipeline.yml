@@ -34,7 +34,7 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         if: |
           github.event_name == 'push' &&
-          !contains(github.event.head_commit.message, '#skip')
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "fso2022-pokedex" #Must be unique in Heroku
@@ -52,7 +52,7 @@ jobs:
       - name: Bump version and push tag
         if: |
           github.event_name == 'push' &&
-          !contains(github.event.head_commit.message, '#skip')
+          !contains(join(github.event.commits.*.message, ' '), '#skip')
         uses: anothrNick/github-tag-action@1.36.0
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
