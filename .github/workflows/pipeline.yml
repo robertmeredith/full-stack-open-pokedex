@@ -46,7 +46,7 @@ jobs:
           rollbackonhealthcheckfailed: true
       - name: Deploy Success
         uses: rjstone/discord-webhook-notify@v1
-        if: ${{ success() && deploy.steps.conclusion == 'success' }}
+        if: ${{ success() && steps.deploy.conclusion == 'success' }}
         with:
           username: Pokedex
           text: A new version of Pokedex deployed
