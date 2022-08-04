@@ -12,7 +12,7 @@ app.get('/health', (req, res) => {
 })
 
 app.get('/version', (req, res) => {
-  res.send('VERSION 5 - FIRST BRANCH ADDED')
+  res.send('VERSION v0.0.4')
 })
 
 app.listen(PORT, () => {
