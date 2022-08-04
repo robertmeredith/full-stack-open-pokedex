@@ -30,7 +30,8 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5001
-      - name: publish to heroku   
+      - name: deploy to heroku  
+        id: deploy 
         uses: akhileshns/heroku-deploy@v3.12.12
         if: |
           github.event_name == 'push' &&
@@ -43,6 +44,26 @@ jobs:
           checkstring: "HEALTHY APP"
           delay: 5
           rollbackonhealthcheckfailed: true
+      - name: Deploy Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ success() && steps.deploy.conclusion == 'success' }}
+        with:
+          username: Pokedex
+          text: A new version of Pokedex deployed
+          severity: info
+          details: View the app at - https://fso2022-pokedex.herokuapp.com/
+          avatarUrl: https://avatars.githubusercontent.com/u/64670585?v=4
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: failure()
+        with:
+            username: Pokedex
+            text: Build failed
+            severity: error
+            details: Test Failed!
+            avatarUrl: https://avatars.githubusercontent.com/u/64670585?v=4
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -53,7 +74,7 @@ jobs:
         if: |
           github.event_name == 'push' &&
           !contains(join(github.event.commits.*.message, ' '), '#skip')
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@eca2b69f9e2c24be7decccd0f15fdb1ea5906598
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
