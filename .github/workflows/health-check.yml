@@ -13,9 +13,9 @@ on:
 
 jobs:
   site_health_job:
+    runs-on: ubuntu-20.04
     steps:
       - name: Check the deployed service URL
-        runs-on: ubuntu-20.04
         uses: jtalk/url-health-check-action@v2
         with:
           # Check the following URLs one by one sequentially
